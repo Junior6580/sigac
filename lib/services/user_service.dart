@@ -1,13 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:sigac/constant.dart';
 import 'package:sigac/models/api_response.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sigac/models/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
-Future<ApiResponde> login(String email, String password) async {
-  ApiResponde apiResponse = ApiResponde();
+// login
+Future<ApiResponse> login(String email, String password) async {
+  ApiResponse apiResponse = ApiResponse();
   try {
     final response = await http.post(Uri.parse(loginURL),
         headers: {'Accept': 'application/json'},
@@ -19,7 +21,7 @@ Future<ApiResponde> login(String email, String password) async {
         break;
       case 422:
         final errors = jsonDecode(response.body)['errors'];
-        apiResponse.error = errors[errors.keys.element(0)][0];
+        apiResponse.error = errors[errors.keys.elementAt(0)][0];
         break;
       case 403:
         apiResponse.error = jsonDecode(response.body)['message'];
@@ -31,11 +33,13 @@ Future<ApiResponde> login(String email, String password) async {
   } catch (e) {
     apiResponse.error = serverError;
   }
+
   return apiResponse;
 }
 
-Future<ApiResponde> register(String name, String email, String password) async {
-  ApiResponde apiResponse = ApiResponde();
+// Register
+Future<ApiResponse> register(String name, String email, String password) async {
+  ApiResponse apiResponse = ApiResponse();
   try {
     final response = await http.post(Uri.parse(registerURL), headers: {
       'Accept': 'application/json'
@@ -52,10 +56,7 @@ Future<ApiResponde> register(String name, String email, String password) async {
         break;
       case 422:
         final errors = jsonDecode(response.body)['errors'];
-        apiResponse.error = errors[errors.keys.element(0)][0];
-        break;
-      case 403:
-        apiResponse.error = jsonDecode(response.body)['message'];
+        apiResponse.error = errors[errors.keys.elementAt(0)][0];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -67,8 +68,9 @@ Future<ApiResponde> register(String name, String email, String password) async {
   return apiResponse;
 }
 
-Future<ApiResponde> GetUserDetail() async {
-  ApiResponde apiResponse = ApiResponde();
+// User
+Future<ApiResponse> getUserDetail() async {
+  ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
     final response = await http.get(Uri.parse(userURL), headers: {
@@ -93,17 +95,61 @@ Future<ApiResponde> GetUserDetail() async {
   return apiResponse;
 }
 
+// Update user
+Future<ApiResponse> updateUser(String name, String? image) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http.put(Uri.parse(userURL),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: image == null
+            ? {
+                'name': name,
+              }
+            : {'name': name, 'image': image});
+    // user can update his/her name or name and image
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        print(response.body);
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+// get token
 Future<String> getToken() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   return pref.getString('token') ?? '';
 }
 
-Future<int?> getUserId() async {
+// get user id
+Future<int> getUserId() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   return pref.getInt('userId') ?? 0;
 }
 
-Future<bool> logaut() async {
+// logout
+Future<bool> logout() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   return await pref.remove('token');
+}
+
+// Get base64 encoded image
+String? getStringImage(File? file) {
+  if (file == null) return null;
+  return base64Encode(file.readAsBytesSync());
 }

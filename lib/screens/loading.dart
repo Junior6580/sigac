@@ -1,16 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:sigac/constant.dart';
 import 'package:sigac/models/api_response.dart';
 import 'package:sigac/screens/home.dart';
-import 'package:sigac/screens/login.dart';
 import 'package:sigac/services/user_service.dart';
+import 'package:flutter/material.dart';
+
+import 'login.dart';
 
 class Loading extends StatefulWidget {
   @override
   _LoadingState createState() => _LoadingState();
-  Widget build(BuildContext context) {
-    return Container();
-  }
 }
 
 class _LoadingState extends State<Loading> {
@@ -20,16 +18,16 @@ class _LoadingState extends State<Loading> {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => Login()), (route) => false);
     } else {
-      ApiResponde responde = await GetUserDetail();
-      if (responde.error == null) {
+      ApiResponse response = await getUserDetail();
+      if (response.error == null) {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => Home()), (route) => false);
-      } else if (responde.error == unauthorized) {
+      } else if (response.error == unauthorized) {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => Login()), (route) => false);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('${responde.error}'),
+          content: Text('${response.error}'),
         ));
       }
     }

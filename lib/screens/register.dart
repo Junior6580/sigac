@@ -22,7 +22,7 @@ class _RegisterState extends State<Register> {
       passwordConfirmController = TextEditingController();
 
   void _registerUser() async {
-    ApiResponde response = await register(
+    ApiResponse response = await register(
         nameController.text, emailController.text, passwordController.text);
     if (response.error == null) {
       _saveAndRedirectToHome(response.data as User);
@@ -58,7 +58,7 @@ class _RegisterState extends State<Register> {
           children: [
             TextFormField(
                 controller: nameController,
-                validator: (val) => val!.isEmpty ? 'Invalid name' : null,
+                validator: (val) => val!.isEmpty ? 'Nombre invalido!' : null,
                 decoration: kInputDecoration('Name')),
             SizedBox(
               height: 20,
@@ -66,8 +66,9 @@ class _RegisterState extends State<Register> {
             TextFormField(
                 controller: emailController,
                 keyboardType: TextInputType.emailAddress,
-                validator: (val) =>
-                    val!.isEmpty ? 'Invalid email address' : null,
+                validator: (val) => val!.isEmpty
+                    ? 'Dirección de correo electrónico no válida'
+                    : null,
                 decoration: kInputDecoration('Email')),
             SizedBox(
               height: 20,
@@ -75,8 +76,9 @@ class _RegisterState extends State<Register> {
             TextFormField(
                 controller: passwordController,
                 obscureText: true,
-                validator: (val) =>
-                    val!.length < 6 ? 'Required at least 6 chars' : null,
+                validator: (val) => val!.length < 6
+                    ? 'Se requieren al menos 6 caracteres'
+                    : null,
                 decoration: kInputDecoration('Password')),
             SizedBox(
               height: 20,
@@ -85,7 +87,7 @@ class _RegisterState extends State<Register> {
                 controller: passwordConfirmController,
                 obscureText: true,
                 validator: (val) => val != passwordController.text
-                    ? 'Confirm password does not match'
+                    ? 'Confirmar contraseña no coincide'
                     : null,
                 decoration: kInputDecoration('Confirm password')),
             SizedBox(
@@ -107,7 +109,7 @@ class _RegisterState extends State<Register> {
             SizedBox(
               height: 20,
             ),
-            kLoginRegisterHint('Already have an account? ', 'Login', () {
+            kLoginRegisterHint('¿Ya tiene una cuenta? ', 'Login', () {
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => Login()),
                   (route) => false);

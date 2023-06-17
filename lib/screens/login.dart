@@ -19,15 +19,15 @@ class _LoginState extends State<Login> {
   bool loading = false;
 
   void _loginUser() async {
-    ApiResponde responde = await login(txtEmail.text, txtPassword.text);
-    if (responde.error == null) {
-      _saveAndRedirectToHome(responde.data as User);
+    ApiResponse response = await login(txtEmail.text, txtPassword.text);
+    if (response.error == null) {
+      _saveAndRedirectToHome(response.data as User);
     } else {
       setState(() {
         loading = false;
       });
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('${responde.error}')));
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
     }
   }
 
@@ -43,7 +43,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('login'),
+        title: Text('Login'),
         centerTitle: true,
       ),
       body: Form(
@@ -54,8 +54,9 @@ class _LoginState extends State<Login> {
             TextFormField(
                 keyboardType: TextInputType.emailAddress,
                 controller: txtEmail,
-                validator: (val) =>
-                    val!.isEmpty ? 'Invalid email address' : null,
+                validator: (val) => val!.isEmpty
+                    ? 'Dirección de correo electrónico no válida'
+                    : null,
                 decoration: kInputDecoration('Email')),
             SizedBox(
               height: 10,
@@ -63,8 +64,9 @@ class _LoginState extends State<Login> {
             TextFormField(
                 controller: txtPassword,
                 obscureText: true,
-                validator: (val) =>
-                    val!.length < 6 ? 'Required at least 6 chars' : null,
+                validator: (val) => val!.length < 6
+                    ? 'Se requieren al menos 6 caracteres'
+                    : null,
                 decoration: kInputDecoration('Password')),
             SizedBox(
               height: 10,
@@ -84,15 +86,11 @@ class _LoginState extends State<Login> {
             SizedBox(
               height: 10,
             ),
-            kLoginRegisterHint(
-              'Dont have an account?',
-              'Register',
-              () {
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => Register()),
-                    (route) => false);
-              },
-            ),
+            kLoginRegisterHint('Dont have an acount? ', 'Register', () {
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => Register()),
+                  (route) => false);
+            })
           ],
         ),
       ),

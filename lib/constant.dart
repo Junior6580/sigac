@@ -20,7 +20,8 @@ InputDecoration kInputDecoration(String label) {
     labelText: label,
     contentPadding: EdgeInsets.all(10),
     border: OutlineInputBorder(
-      borderSide: BorderSide(width: 1, color: Colors.red),
+      borderSide:
+          BorderSide(width: 1, color: const Color.fromARGB(255, 237, 20, 4)),
     ),
   );
 }
@@ -33,8 +34,8 @@ TextButton kTextButton(String label, Function onPressed) {
       style: TextStyle(color: Colors.white),
     ),
     style: ButtonStyle(
-        backgroundColor:
-            MaterialStateColor.resolveWith((states) => Colors.blue),
+        backgroundColor: MaterialStateColor.resolveWith(
+            (states) => Color.fromARGB(255, 25, 0, 254)),
         padding: MaterialStateProperty.resolveWith(
             (states) => EdgeInsets.symmetric(vertical: 10))),
     onPressed: () => onPressed(),
@@ -48,7 +49,8 @@ Row kLoginRegisterHint(String text, String label, Function onTap) {
     children: [
       Text(text),
       GestureDetector(
-          child: Text(label, style: TextStyle(color: Colors.blue)),
+          child: Text(label,
+              style: TextStyle(color: Color.fromARGB(255, 25, 0, 250))),
           onTap: () => onTap()),
     ],
   );
