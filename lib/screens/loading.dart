@@ -1,10 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:sigac/constant.dart';
 import 'package:sigac/models/api_response.dart';
 import 'package:sigac/screens/home.dart';
+import 'package:sigac/screens/login.dart';
 import 'package:sigac/services/user_service.dart';
-import 'package:flutter/material.dart';
 
-import 'login.dart';
 
 class Loading extends StatefulWidget {
   @override
@@ -41,10 +41,12 @@ class _LoadingState extends State<Loading> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      color: Colors.white,
-      child: Center(child: CircularProgressIndicator()),
+    return Scaffold(
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        color: Colors.white,
+        child: Center(child: CircularProgressIndicator()),
+      ),
     );
   }
 }

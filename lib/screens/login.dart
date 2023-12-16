@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sigac/constant.dart';
 import 'package:sigac/models/api_response.dart';
 import 'package:sigac/models/user.dart';
 import 'package:sigac/screens/home.dart';
-import 'package:sigac/screens/register.dart';
 import 'package:sigac/services/user_service.dart';
+
+import '../../constant.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -43,54 +43,70 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text(
+          'SIGAC',
+          style: TextStyle(color: Colors.black),
+        ),
         centerTitle: true,
+        backgroundColor: Colors.blue, // Set the app bar color to blue
       ),
-      body: Form(
-        key: formkey,
-        child: ListView(
-          padding: EdgeInsets.all(32),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/img.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
           children: [
-            TextFormField(
-                keyboardType: TextInputType.emailAddress,
-                controller: txtEmail,
-                validator: (val) => val!.isEmpty
-                    ? 'Dirección de correo electrónico no válida'
-                    : null,
-                decoration: kInputDecoration('Email')),
-            SizedBox(
-              height: 10,
+            Container(
+              margin: EdgeInsets.only(top: 16),
+              child: Image.asset(
+                'assets/images/logo.png',
+                height: 100,
+                width: 100,
+              ),
             ),
-            TextFormField(
-                controller: txtPassword,
-                obscureText: true,
-                validator: (val) => val!.length < 6
-                    ? 'Se requieren al menos 6 caracteres'
-                    : null,
-                decoration: kInputDecoration('Password')),
-            SizedBox(
-              height: 10,
+            Expanded(
+              child: Form(
+                key: formkey,
+                child: ListView(
+                  padding: EdgeInsets.all(32),
+                  children: [
+                    TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      controller: txtEmail,
+                      validator: (val) => val!.isEmpty
+                          ? 'Dirección de correo electrónico no válida'
+                          : null,
+                      decoration: kInputDecoration('Correo Electrónico'),
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: txtPassword,
+                      obscureText: true,
+                      validator: (val) => val!.length < 6
+                          ? 'Se requieren al menos 6 caracteres'
+                          : null,
+                      decoration: kInputDecoration('Contraseña'),
+                    ),
+                    SizedBox(height: 10),
+                    loading
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : kTextButton('Login', () {
+                            if (formkey.currentState!.validate()) {
+                              setState(() {
+                                loading = true;
+                                _loginUser();
+                              });
+                            }
+                          }),
+                  ],
+                ),
+              ),
             ),
-            loading
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : kTextButton('Login', () {
-                    if (formkey.currentState!.validate()) {
-                      setState(() {
-                        loading = true;
-                        _loginUser();
-                      });
-                    }
-                  }),
-            SizedBox(
-              height: 10,
-            ),
-            kLoginRegisterHint('Dont have an acount? ', 'Register', () {
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => Register()),
-                  (route) => false);
-            })
           ],
         ),
       ),

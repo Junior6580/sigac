@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sigac/screens/loading.dart';
 
-void main() {
+void main() async {
   runApp(App());
 }
 
